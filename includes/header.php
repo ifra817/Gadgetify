@@ -5,6 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 $cart_count = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
 $logged_in = isset($_SESSION['user_id']);
+$role = $_SESSION['role'] ?? 'guest';
 ?>
 
 <!DOCTYPE html>
@@ -27,29 +28,54 @@ $logged_in = isset($_SESSION['user_id']);
         <!-- NAVIGATION -->
         <nav class="main-nav">
             <ul>
+
+                <!-- Always visible -->
                 <li><a href="/Gadgetify/index.php">Home</a></li>
                 <li><a href="/Gadgetify/pages/about.php">About</a></li>
-                <li><a href="/Gadgetify/pages/shop.php">Shop</a></li>
 
-                <?php if ($logged_in): ?>
+                <?php if ($role === 'admin'): ?>
+
+                    <!-- -------------------------- -->
+                    <!-- ADMIN NAVIGATION -->
+                    <!-- -------------------------- -->
+                    <li><a href="/Gadgetify/modules/admin/dashboard.php">Admin Dashboard</a></li>
+                    <li><a href="/Gadgetify/modules/admin/add_product.php">Add Product</a></li>
+                    <li><a href="/Gadgetify/modules/admin/products_list.php">Manage Products</a></li>
+                    <li><a href="/Gadgetify/modules/auth/logout.php">Logout</a></li>
+
+                <?php elseif ($role === 'customer'): ?>
+
+                    <!-- -------------------------- -->
+                    <!-- CUSTOMER NAVIGATION -->
+                    <!-- -------------------------- -->
+                    <li><a href="/Gadgetify/pages/shop.php">Shop</a></li>
                     <li><a href="/Gadgetify/pages/dashboard.php">Dashboard</a></li>
                     <li><a href="/Gadgetify/modules/orders/order_history.php">My Orders</a></li>
                     <li><a href="/Gadgetify/pages/profile.php">Profile</a></li>
                     <li><a href="/Gadgetify/modules/auth/logout.php">Logout</a></li>
+
                 <?php else: ?>
+
+                    <!-- -------------------------- -->
+                    <!-- GUEST NAVIGATION -->
+                    <!-- -------------------------- -->
+                    <li><a href="/Gadgetify/pages/shop.php">Shop</a></li>
                     <li><a href="/Gadgetify/modules/auth/login.php">Login</a></li>
                     <li><a href="/Gadgetify/modules/auth/register.php">Register</a></li>
+
                 <?php endif; ?>
 
                 <li><a href="/Gadgetify/pages/contact.php">Contact</a></li>
             </ul>
         </nav>
 
-        <!-- CART & DARK MODE -->
+        <!-- CART (only for customers) -->
         <div class="header-icons">
-            <a href="/Gadgetify/modules/cart/cart.php" class="cart-icon">
-                🛒 (<?= $cart_count ?>)
-            </a>
+            <?php if ($role === 'customer'): ?>
+                <a href="/Gadgetify/modules/cart/cart.php" class="cart-icon">
+                    🛒 (<?= $cart_count ?>)
+                </a>
+            <?php endif; ?>
 
             <button id="dark-mode-toggle" class="mode-toggle">🌑</button>
         </div>

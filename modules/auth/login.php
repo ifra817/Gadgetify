@@ -1,13 +1,11 @@
 <?php
 // modules/auth/login.php
-// Robust includes + absolute redirect
 
-// start session
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// include files using server-side paths (reliable)
+// include files
 require_once __DIR__ . '/../../includes/db.php';
 require_once __DIR__ . '/../../includes/header.php';
 
@@ -21,21 +19,27 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (empty($email) || empty($password)) {
         $error = "Both fields are required.";
     } else {
-        $stmt = $conn->prepare("SELECT id, password_hash, name FROM users WHERE email = ?");
+        // SELECT role also!
+        $stmt = $conn->prepare(
+            "SELECT id, password_hash, name, role FROM users WHERE email = ?"
+        );
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $stmt->store_result();
 
         if ($stmt->num_rows === 1) {
-            $stmt->bind_result($id, $hash, $name);
+            // BIND ALL FOUR COLUMNS
+            $stmt->bind_result($id, $hash, $name, $role);
             $stmt->fetch();
 
             if (password_verify($password, $hash)) {
-                // set session
+
+                // set session values
                 $_SESSION["user_id"] = $id;
                 $_SESSION["user_name"] = $name;
+                $_SESSION["role"] = $role;   // VERY IMPORTANT
 
-                // use an absolute URL so browser won't mis-resolve it
+                // redirect
                 header("Location: /Gadgetify/pages/dashboard.php");
                 exit;
             } else {
@@ -69,6 +73,4 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </p>
 </div>
 
-<?php
-require_once __DIR__ . '/../../includes/footer.php';
-?>
+<?php require_once __DIR__ . '/../../includes/footer.php'; ?>
