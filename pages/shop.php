@@ -1,6 +1,6 @@
 <?php 
-require_once __DIR__ . '/../includes/db.php';
-require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/db.php';    // Line 2
+require_once __DIR__ . '/../includes/header.php'; // Line 3
 ?>
 
 <section class="shop-content container">
@@ -26,7 +26,7 @@ require_once __DIR__ . '/../includes/header.php';
                     echo '    <div class="product-info">';
                     echo '        <h3>' . htmlspecialchars($row["name"]) . '</h3>';
                     echo '        <p class="price">$' . number_format($row["price"], 2) . '</p>';
-                    echo '        <a href="product.php?id=' . $row["id"] . '" class="btn btn-add-cart">View Details</a>'; 
+                    echo '        <a href="product_page.php?id=' . $row["id"] . '" class="btn btn-add-cart">View Details</a>'; 
                     echo '    </div>';
                     echo '</div>';
                 }

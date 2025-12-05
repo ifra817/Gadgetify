@@ -1,7 +1,7 @@
-<?php include "../includes/auth_check.php"; ?>
+<?php include "../../includes/auth_check.php"; ?>
 <?php
-require_once __DIR__ . '/../includes/db.php';
-require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . "/../../includes/db.php";
+require_once __DIR__ . '/../../includes/header.php';
 
 // Check login
 if (!isset($_SESSION["user_id"])) {
