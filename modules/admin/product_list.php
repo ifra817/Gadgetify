@@ -73,17 +73,6 @@ $result = $conn->query($sql);
     background: #218838;
 }
 
-<?php if (isset($_GET['msg'])): ?>
-    <p style="color: #0f0; text-align:center;">
-        <?php
-            if ($_GET['msg'] === "deleted") echo "Product deleted successfully!";
-            if ($_GET['msg'] === "not_found") echo "Product not found!";
-            if ($_GET['msg'] === "invalid_id") echo "Invalid product ID!";
-            if ($_GET['msg'] === "error") echo "Failed to delete product!";
-        ?>
-    </p>
-<?php endif; ?>
-
 </style>
 <div class="container-table">
 
@@ -125,7 +114,8 @@ $result = $conn->query($sql);
                     <td><?= $row['id']; ?></td>
 
                     <td>
-                        <img src="/Gadgetify/assets/images/<?= $row['image_url']; ?>" alt="product">
+                        <img src="../../assets/images/<?= $row['image_url']; ?>" alt="product">
+
                     </td>
 
                     <td><?= htmlspecialchars($row['name']); ?></td>

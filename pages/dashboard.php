@@ -1,9 +1,9 @@
 <?php
-require_once __DIR__ . '/../../includes/admin_check.php';
+require_once __DIR__ . '/../includes/admin_check.php';
 require_once __DIR__ . '/../includes/auth_check.php';
-
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/header.php';
+
 ?>
 <?php
 if ($_SESSION['role'] === 'admin') {
@@ -58,4 +58,4 @@ if ($_SESSION['role'] === 'admin') {
     </div>
 </section>
 
-<?php include 'includes/footer.php'; ?>
+<?php include '/../includes/footer.php'; ?>
