@@ -1,11 +1,16 @@
-<?php
+<?php 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$cart_count = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
+$role = strtolower($_SESSION['role'] ?? 'guest');
 $logged_in = isset($_SESSION['user_id']);
-$role = $_SESSION['role'] ?? 'guest';
+$current_page = $_SERVER['REQUEST_URI'];
+
+$cart_count = 0;
+if ($logged_in && $role === 'customer') {
+    $cart_count = $_SESSION['cart_item_count'] ?? 0;
+}
 ?>
 
 <!DOCTYPE html>
@@ -29,47 +34,60 @@ $role = $_SESSION['role'] ?? 'guest';
         <nav class="main-nav">
             <ul>
 
-                <!-- Always visible -->
-                <li><a href="/Gadgetify/index.php">Home</a></li>
-                <li><a href="/Gadgetify/pages/about.php">About</a></li>
+                <!-- ALWAYS VISIBLE -->
+                <li><a href="/Gadgetify/index.php"
+                    class="<?= strpos($current_page, '/Gadgetify/index.php') !== false ? 'active' : '' ?>">Home</a></li>
+
+                <li><a href="/Gadgetify/pages/about.php"
+                    class="<?= strpos($current_page, '/Gadgetify/pages/about.php') !== false ? 'active' : '' ?>">About</a></li>
 
                 <?php if ($role === 'admin'): ?>
 
-                    <!-- -------------------------- -->
-                    <!-- ADMIN NAVIGATION -->
-                    <!-- -------------------------- -->
-                    <li><a href="/Gadgetify/modules/admin/dashboard.php">Admin Dashboard</a></li>
-                    <li><a href="/Gadgetify/modules/admin/add_product.php">Add Product</a></li>
-                    <li><a href="/Gadgetify/modules/admin/product_list.php">Manage Products</a></li>
+                    <!-- ADMIN LINKS -->
+                    <li><a href="/Gadgetify/modules/admin/dashboard.php"
+                        class="<?= strpos($current_page, '/Gadgetify/modules/admin/dashboard.php') !== false ? 'active' : '' ?>">Admin Dashboard</a></li>
+
+                    <li><a href="/Gadgetify/modules/admin/product_list.php"
+                        class="<?= strpos($current_page, '/Gadgetify/modules/admin/product_list.php') !== false ? 'active' : '' ?>">Manage Products</a></li>
+
                     <li><a href="/Gadgetify/modules/auth/logout.php">Logout</a></li>
 
                 <?php elseif ($role === 'customer'): ?>
 
-                    <!-- -------------------------- -->
-                    <!-- CUSTOMER NAVIGATION -->
-                    <!-- -------------------------- -->
-                    <li><a href="/Gadgetify/pages/shop.php">Shop</a></li>
-                    <li><a href="/Gadgetify/pages/dashboard.php">Dashboard</a></li>
-                    <li><a href="/Gadgetify/modules/orders/order_history.php">My Orders</a></li>
-                    <li><a href="/Gadgetify/pages/profile.php">Profile</a></li>
+                    <!-- CUSTOMER LINKS -->
+                    <li><a href="/Gadgetify/pages/shop.php"
+                        class="<?= strpos($current_page, '/Gadgetify/pages/shop.php') !== false ? 'active' : '' ?>">Shop</a></li>
+
+                    <li><a href="/Gadgetify/pages/dashboard.php"
+                        class="<?= strpos($current_page, '/Gadgetify/pages/dashboard.php') !== false ? 'active' : '' ?>">Dashboard</a></li>
+
+                    <li><a href="/Gadgetify/modules/orders/order_history.php"
+                        class="<?= strpos($current_page, '/Gadgetify/modules/orders/order_history.php') !== false ? 'active' : '' ?>">My Orders</a></li>
+
                     <li><a href="/Gadgetify/modules/auth/logout.php">Logout</a></li>
 
                 <?php else: ?>
 
-                    <!-- -------------------------- -->
-                    <!-- GUEST NAVIGATION -->
-                    <!-- -------------------------- -->
-                    <li><a href="/Gadgetify/pages/shop.php">Shop</a></li>
-                    <li><a href="/Gadgetify/modules/auth/login.php">Login</a></li>
-                    <li><a href="/Gadgetify/modules/auth/register.php">Register</a></li>
+                    <!-- GUEST LINKS -->
+                    <li><a href="/Gadgetify/pages/shop.php"
+                        class="<?= strpos($current_page, '/Gadgetify/pages/shop.php') !== false ? 'active' : '' ?>">Shop</a></li>
+
+                    <li><a href="/Gadgetify/modules/auth/login.php"
+                        class="<?= strpos($current_page, '/Gadgetify/modules/auth/login.php') !== false ? 'active' : '' ?>">Login</a></li>
+
+                    <li><a href="/Gadgetify/modules/auth/register.php"
+                        class="<?= strpos($current_page, '/Gadgetify/modules/auth/register.php') !== false ? 'active' : '' ?>">Register</a></li>
 
                 <?php endif; ?>
 
-                <li><a href="/Gadgetify/pages/contact.php">Contact</a></li>
+                <li><a href="/Gadgetify/pages/contact.php"
+                    class="<?= strpos($current_page, '/Gadgetify/pages/contact.php') !== false ? 'active' : '' ?>">Contact</a></li>
+
             </ul>
         </nav>
 
-        <!-- CART (only for customers) -->
+
+        <!-- CART ICON -->
         <div class="header-icons">
             <?php if ($role === 'customer'): ?>
                 <a href="/Gadgetify/modules/cart/cart.php" class="cart-icon">

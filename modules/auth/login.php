@@ -1,11 +1,8 @@
 <?php
-// modules/auth/login.php
-
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// include files
 require_once __DIR__ . '/../../includes/db.php';
 require_once __DIR__ . '/../../includes/header.php';
 
@@ -13,13 +10,15 @@ $email = $password = "";
 $error = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
     $email = trim($_POST["email"]);
     $password = $_POST["password"];
 
     if (empty($email) || empty($password)) {
         $error = "Both fields are required.";
     } else {
-        // SELECT role also!
+
+        // Correct query
         $stmt = $conn->prepare(
             "SELECT id, password_hash, name, role FROM users WHERE email = ?"
         );
@@ -28,19 +27,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $stmt->store_result();
 
         if ($stmt->num_rows === 1) {
-            // BIND ALL FOUR COLUMNS
+
             $stmt->bind_result($id, $hash, $name, $role);
             $stmt->fetch();
 
             if (password_verify($password, $hash)) {
-                // After verifying email + password
 
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['user_name'] = $user['name'];
-                $_SESSION['role'] = $user['role'];  // "admin" or "customer"
+                // STORE SESSION PROPERLY
+                $_SESSION['user_id'] = $id;
+                $_SESSION['user_name'] = $name;
+                $_SESSION['role'] = strtolower($role);
 
-                // REDIRECT BASED ON ROLE
-                if ($user['role'] === 'admin') {
+                // REDIRECT
+                if ($_SESSION['role'] === 'admin') {
                     header("Location: /Gadgetify/modules/admin/dashboard.php");
                 } else {
                     header("Location: /Gadgetify/pages/dashboard.php");
@@ -50,6 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             } else {
                 $error = "Incorrect password.";
             }
+
         } else {
             $error = "No account found with this email.";
         }
@@ -60,8 +60,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <div class="container" style="max-width:500px; margin-top:40px;">
     <h2>Login</h2>
 
-    <?php if (!empty($error)) echo "<p style='color:red;'>".htmlspecialchars($error)."</p>"; ?>
-    <?php if (isset($_GET['success'])) echo "<p style='color:green;'>Account created! You may login.</p>"; ?>
+    <?php 
+    if (!empty($error)) echo "<p style='color:red;'>$error</p>"; 
+    if (isset($_GET['success'])) echo "<p style='color:green;'>Account created! You may login.</p>"; 
+    ?>
 
     <form method="POST" action="">
         <label>Email</label>
@@ -74,7 +76,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </form>
 
     <p style="text-align:center; margin-top:10px;">
-        Don't have an account? <a href="register.php">Register</a>
+        Don’t have an account? <a href="register.php">Register</a>
     </p>
 </div>
 

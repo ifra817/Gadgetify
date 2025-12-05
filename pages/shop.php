@@ -22,11 +22,11 @@ require_once __DIR__ . '/../includes/header.php';
             if ($result && $result->num_rows > 0) {
                 while($row = $result->fetch_assoc()) {
                     echo '<div class="product-card">';
-                    echo '    <img src="../assets/images/' . htmlspecialchars($row["image_url"]) . '" alt="' . htmlspecialchars($row["name"]) . '">';
+                    echo '    <img src="/Gadgetify/assets/images/' . htmlspecialchars($row["image_url"]) . '" alt="' . htmlspecialchars($row["name"]) . '">';
                     echo '    <div class="product-info">';
                     echo '        <h3>' . htmlspecialchars($row["name"]) . '</h3>';
                     echo '        <p class="price">$' . number_format($row["price"], 2) . '</p>';
-                    echo '        <a href="product.php?id=' . $row["id"] . '" class="btn btn-add-cart">View Details</a>'; 
+                    echo '        <a href="product_page.php?id=' . $row["id"] . '" class="btn btn-add-cart">View Details</a>'; 
                     echo '    </div>';
                     echo '</div>';
                 }
